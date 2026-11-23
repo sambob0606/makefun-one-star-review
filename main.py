@@ -8,10 +8,26 @@ network, no reads outside the repo.
 
 import os
 
-REVIEW = (
-    "One star. Sleep takes eight hours every night and returns me to the "
-    "exact same problems, only now I am also late for them."
-)
+PARTS = [
+    "One star. ",
+    "Sleep takes eight hours every night ",
+    "and returns me to the exact same problems, ",
+    "only now I am also late for them.",
+]
+
+MAX_CHARS = 160
+
+
+def build_review() -> str:
+    """Compose the review from its parts and enforce the length gate."""
+    text = "".join(PARTS).strip()
+    assert 1 <= len(text) <= MAX_CHARS, (
+        f"review is {len(text)} chars, must be 1-{MAX_CHARS}"
+    )
+    assert text.strip(), "review must not be only whitespace"
+    assert "\n" not in text and "\r" not in text, "review must be a single line"
+    return text
+
 # The joke is a complaint filed in earnest against a thing that cannot be
 # fixed. The grievance is true and daily: sleep eats a third of the day
 # and hands the same problems back. The turn lands in the last few words
@@ -21,9 +37,7 @@ REVIEW = (
 
 
 def main() -> None:
-    text = REVIEW.strip()
-    assert 1 <= len(text) <= 160, f"review is {len(text)} chars, must be 1-160"
-    assert text.strip(), "review must not be only whitespace"
+    text = build_review()
     os.makedirs("/output", exist_ok=True)
     with open("/output/entry.txt", "w", encoding="utf-8") as f:
         f.write(text)
